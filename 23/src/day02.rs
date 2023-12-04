@@ -1,8 +1,12 @@
 use crate::{Aoc, Day02, Display, FileRep, Result};
 
-use std::cmp::{max, Ordering, PartialOrd};
+use std::{
+    cmp::{max, Ordering, PartialOrd},
+    convert::Infallible,
+    str::FromStr,
+};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 struct Rgb {
     r: u8,
     g: u8,
@@ -23,6 +27,35 @@ impl PartialOrd for Rgb {
     }
 }
 
+impl FromStr for Rgb {
+    type Err = Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut rgb: Self = Default::default();
+
+        for c in s.split(',') {
+            let c = c.trim_start();
+            let (count, color) = c.split_once(' ').unwrap();
+            let count = count.parse::<u8>().ok().unwrap();
+
+            match color {
+                "red" => {
+                    rgb.r = count;
+                }
+                "green" => {
+                    rgb.g = count;
+                }
+                "blue" => {
+                    rgb.b = count;
+                }
+                _ => panic!(),
+            }
+        }
+
+        Ok(rgb)
+    }
+}
+
 fn max_rgb(a: Rgb, b: Rgb) -> Rgb {
     let r = max(a.r, b.r);
     let g = max(a.g, b.g);
@@ -35,7 +68,7 @@ fn power(Rgb { r, g, b }: Rgb) -> u32 {
     (r as u32) * (g as u32) * (b as u32)
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 struct Game {
     id: usize,
     cubes: Vec<Rgb>,
