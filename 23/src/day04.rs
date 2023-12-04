@@ -40,14 +40,8 @@ impl FromStr for Card {
 }
 
 impl Card {
-    fn n_winning(mut self) -> usize {
-        self.win.sort_unstable();
-        self
-            .nos
-            .iter()
-            .flat_map(|n| self.win.binary_search(n).ok())
-            .collect::<Vec<_>>()
-            .len()
+    fn n_winning(&self) -> usize {
+        self.nos.iter().filter(|n| self.win.contains(n)).count()
     }
 }
 
@@ -75,7 +69,7 @@ impl Aoc for Day04 {
             let n = card.n_winning();
 
             for i in 0..n {
-                copies[id+i+1] += copies[id];
+                copies[id + i + 1] += copies[id];
             }
         }
 
