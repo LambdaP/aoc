@@ -12,11 +12,19 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
+mod day06;
+mod day10;
+mod day11;
 
 pub struct Day01;
 pub struct Day02;
 pub struct Day03;
 pub struct Day04;
+pub struct Day05;
+pub struct Day06;
+pub struct Day10;
+pub struct Day11;
 
 pub struct FileRep<'a> {
     bytes: Vec<u8>,
@@ -26,8 +34,12 @@ pub struct FileRep<'a> {
 }
 
 pub trait Aoc {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>>;
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>>;
+    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
+        result!("todo!")
+    }
+    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
+        result!("todo!")
+    }
     fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()> {
         // fn run<P: AsRef<std::path::Path> + Copy>(&self, rep: &FileRep) -> Result<()> {
         let bytes = std::fs::read(fpath)?;
