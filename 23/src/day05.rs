@@ -1,23 +1,21 @@
-use crate::{Aoc, Day05, Display, FileRep, Result};
+use crate::{Aoc, Day05, Display, InputRep, Result};
 
-use eyre::{eyre, Report};
-
-use std::str::FromStr;
+use eyre::eyre;
 
 impl Aoc for Day05 {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let input = &input.string;
+    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let input = input.as_str();
         let (seeds, maps) = parse(input)?;
 
         let mut res = usize::MAX;
         for &seed in &seeds {
             let mut stack: Vec<usize> = vec![seed];
             for map in &maps {
-                let src = stack[stack.len()-1];
+                let src = stack[stack.len() - 1];
                 let mut dst = None;
-                for &[d,s,l] in map {
+                for &[d, s, l] in map {
                     if s <= src && src < s + l {
-                        dst = Some(src-s+d);
+                        dst = Some(src - s + d);
                         break;
                     }
                 }
@@ -29,14 +27,14 @@ impl Aoc for Day05 {
 
         result!(res)
     }
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let input = &input.string;
-        let (seeds, mut maps) = parse(input)?;
+    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let input = input.as_str();
+        let (_seeds, mut maps) = parse(input)?;
 
         let mut last_map = maps.pop().unwrap();
 
         last_map.sort_by_key(|arr| arr[0]);
-        let [d0, s0, l0] = last_map[0];
+        let [_d0, _s0, _l0] = last_map[0];
 
         // let mut penultimate_map = maps.pop().unwrap();
         //
@@ -66,14 +64,14 @@ fn parse(file: &str) -> Result<(Vec<usize>, Vec<Vec<[usize; 3]>>)> {
         .ok_or_else(|| eyre!("parse error"))?;
     let seeds = parse_list(seeds)?;
 
-    let maps: Vec<Vec<[usize;3]>> = blocks
-        .map::<Result<_>, _>(|s| parse_block(s))
+    let maps: Vec<Vec<[usize; 3]>> = blocks
+        .map::<Result<_>, _>(parse_block)
         .collect::<Result<_>>()?;
 
     Ok((seeds, maps))
 }
 
-fn parse_block(block: &str) -> Result<Vec<[usize;3]>> {
+fn parse_block(block: &str) -> Result<Vec<[usize; 3]>> {
     block
         .split('\n')
         .skip(1)
@@ -81,15 +79,13 @@ fn parse_block(block: &str) -> Result<Vec<[usize;3]>> {
         .collect()
 }
 
-fn parse_list(list: &str) -> Result<Vec<usize>>
-{
-    list
-        .split_ascii_whitespace()
+fn parse_list(list: &str) -> Result<Vec<usize>> {
+    list.split_ascii_whitespace()
         .map::<Result<_>, _>(|s| Ok(s.parse()?))
         .collect()
 }
 
-fn parse_list_array<const N: usize>(list: &str) -> Result<[usize;N]> {
+fn parse_list_array<const N: usize>(list: &str) -> Result<[usize; N]> {
     let vec = list
         .split_ascii_whitespace()
         .map::<Result<_>, _>(|s| Ok(s.parse::<usize>()?))

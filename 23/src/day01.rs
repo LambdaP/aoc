@@ -1,21 +1,20 @@
-use crate::{Aoc, Day01, Display, FileRep, Result};
+use crate::{Aoc, Day01, Display, InputRep, Result};
 
 impl Aoc for Day01 {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        // let lines = &input.byte_lines;
-        // let mut res: u32 = 0;
-        // for line in lines {
-        //     let mut digits = line.into_iter().filter(|c| c.is_ascii_digit()).peekable();
-        //     let d1 = **digits.peek().unwrap() - b'0';
-        //     let d2 = *digits.last().unwrap() - b'0';
-        //     res += 10 * (d1 as u32) + (d2 as u32);
-        // }
-        // result!(res)
-        result!(0)
+    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let lines = input.lines();
+        let mut res: u32 = 0;
+        for line in lines {
+            let mut digits = line.bytes().filter(|c| c.is_ascii_digit()).peekable();
+            let d1 = *digits.peek().unwrap() - b'0';
+            let d2 = digits.last().unwrap() - b'0';
+            res += 10 * (d1 as u32) + (d2 as u32);
+        }
+        result!(res)
     }
 
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let lines = &input.string_lines;
+    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let lines = input.lines();
         let mut res: u32 = 0;
         for line in lines {
             let d1 = {
@@ -72,4 +71,25 @@ impl Aoc for Day01 {
 
         result!(res)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE_INPUT_PART_1: &str = "1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet";
+
+    const EXAMPLE_INPUT_PART_2: &str = "two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen";
+
+    test_part1!(Day01, EXAMPLE_INPUT_PART_1, 142);
+    test_part2!(Day01, EXAMPLE_INPUT_PART_2, 281);
 }

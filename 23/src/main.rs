@@ -9,8 +9,6 @@ macro_rules! run_day {
         let s = stringify!($day).to_ascii_lowercase();
 
         println!("=== {s} ===");
-        println!("dummy input:");
-        aoc2023::$day.run(&format!("input/{s}.dummy.txt"))?;
         println!("personal input:");
         aoc2023::$day.run(&format!("input/{s}.txt"))?;
     };

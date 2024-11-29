@@ -1,4 +1,4 @@
-use crate::{Aoc, Day04, Display, FileRep, Result};
+use crate::{Aoc, Day04, Display, InputRep, Result};
 
 use eyre::{eyre, Report};
 
@@ -46,8 +46,8 @@ impl Card {
 }
 
 impl Aoc for Day04 {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let lines = &input.string_lines;
+    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let lines = input.lines();
         let mut res = 0;
 
         for line in lines {
@@ -57,11 +57,11 @@ impl Aoc for Day04 {
 
         result!(res)
     }
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let lines = &input.string_lines;
+    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let lines = input.lines();
         let mut copies: Vec<u32> = vec![0; lines.len() + 1];
         for line in lines {
-            let mut card: Card = line.parse()?;
+            let card: Card = line.parse()?;
 
             let id = card.id;
             copies[id] += 1;

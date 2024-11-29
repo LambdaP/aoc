@@ -8,6 +8,30 @@ macro_rules! result {
     };
 }
 
+#[cfg(test)]
+macro_rules! test_part1 {
+    ($day:expr, $input:expr, $expected:expr) => {
+        #[test]
+        fn test_part1() {
+            let input = InputRep::new($input);
+            let result = $day.part1(&input).unwrap();
+            assert_eq!(result.to_string(), $expected.to_string());
+        }
+    };
+}
+
+#[cfg(test)]
+macro_rules! test_part2 {
+    ($day:expr, $input:expr, $expected:expr) => {
+        #[test]
+        fn test_part2() {
+            let input = InputRep::new($input);
+            let result = $day.part2(&input).unwrap();
+            assert_eq!(result.to_string(), $expected.to_string());
+        }
+    };
+}
+
 mod day01;
 mod day02;
 mod day03;
@@ -26,41 +50,49 @@ pub struct Day06;
 pub struct Day10;
 pub struct Day11;
 
-pub struct FileRep<'a> {
-    bytes: Vec<u8>,
-    string: String,
-    byte_lines: Vec<&'a [u8]>,
-    string_lines: Vec<&'a str>,
+pub struct InputRep<'a> {
+    raw: &'a str,
+    lines: Vec<&'a str>,
+}
+
+impl<'a> InputRep<'a> {
+    pub fn new(raw: &'a str) -> Self {
+        let lines = raw.lines().collect();
+        Self { raw, lines }
+    }
+
+    pub fn lines(&self) -> &[&str] {
+        &self.lines
+    }
+
+    pub fn as_str(&self) -> &str {
+        self.raw
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        self.raw.as_bytes()
+    }
 }
 
 pub trait Aoc {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
+    fn part1(&self, _input: &InputRep) -> Result<Box<dyn Display>> {
         result!("todo!")
     }
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        result!("todo!")
-    }
-    fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()> {
-        // fn run<P: AsRef<std::path::Path> + Copy>(&self, rep: &FileRep) -> Result<()> {
-        let bytes = std::fs::read(fpath)?;
-        let byte_lines = byte_lines(&bytes);
-        let bytes = std::fs::read(fpath)?;
-        let string = std::fs::read_to_string(fpath)?;
-        let string_lines = string.lines().collect::<Vec<&str>>();
-        let string = std::fs::read_to_string(fpath)?;
 
-        let rep = FileRep {
-            bytes,
-            string,
-            byte_lines,
-            string_lines,
-        };
+    fn part2(&self, _input: &InputRep) -> Result<Box<dyn Display>> {
+        result!("todo!")
+    }
+
+    fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()>
+    {
+        let string = std::fs::read_to_string(fpath)?;
+        let input = InputRep::new(&string);
 
         let t0 = std::time::SystemTime::now();
-        let res1 = self.part1(&rep);
+        let res1 = self.part1(&input);
         let t1 = t0.elapsed();
         let t0 = std::time::SystemTime::now();
-        let res2 = self.part2(&rep);
+        let res2 = self.part2(&input);
         let t2 = t0.elapsed();
 
         println!("part 1: {} ({:?})", res1?, t1?);
@@ -68,12 +100,4 @@ pub trait Aoc {
 
         Ok(())
     }
-}
-
-fn byte_lines(input: &[u8]) -> Vec<&[u8]> {
-    input
-        .strip_suffix(&[b'\n'])
-        .unwrap_or(input)
-        .split(|b| *b == b'\n')
-        .collect()
 }

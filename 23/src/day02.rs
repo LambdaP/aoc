@@ -1,4 +1,4 @@
-use crate::{Aoc, Day02, Display, FileRep, Result};
+use crate::{Aoc, Day02, Display, InputRep, Result};
 
 use std::{
     cmp::{max, Ordering, PartialOrd},
@@ -75,13 +75,13 @@ struct Game {
 }
 
 impl Aoc for Day02 {
-    fn part1(&self, input: &FileRep) -> Result<Box<dyn Display>> {
+    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
         let test_bag = Rgb {
             r: 12,
             g: 13,
             b: 14,
         };
-        let lines = &input.string_lines;
+        let lines = &input.lines();
 
         let res: usize = lines
             .iter()
@@ -92,8 +92,8 @@ impl Aoc for Day02 {
 
         result!(res)
     }
-    fn part2(&self, input: &FileRep) -> Result<Box<dyn Display>> {
-        let lines = &input.string_lines;
+    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+        let lines = &input.lines();
 
         let res: u32 = lines
             .iter()
@@ -140,4 +140,18 @@ fn parse_line(line: &str) -> Option<Game> {
     }
 
     Some(Game { id, cubes })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE_INPUT: &str = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
+
+    test_part1!(Day02, EXAMPLE_INPUT, 8_u32);
+    test_part2!(Day02, EXAMPLE_INPUT, 2286_u32);
 }
