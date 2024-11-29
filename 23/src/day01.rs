@@ -4,21 +4,28 @@ impl Aoc for Day01 {
     type Output = u32;
 
     fn part1(&self, input: &InputRep) -> Result<Self::Output> {
-        let lines = input.lines();
-        let mut res: u32 = 0;
-        for line in lines {
-            let mut digits = line.bytes().filter(|c| c.is_ascii_digit()).peekable();
-            let d1 = *digits.peek().unwrap() - b'0';
-            let d2 = digits.last().unwrap() - b'0';
-            res += 10 * (d1 as u32) + (d2 as u32);
-        }
+        let res = input
+            .lines()
+            .iter()
+            .map(|line| {
+                let line = line.as_bytes();
+                let first = line[line.iter().position(|&b| b.is_ascii_digit()).unwrap()] - b'0';
+                let last = line[line.iter().rposition(|&b| b.is_ascii_digit()).unwrap()] - b'0';
+
+                u32::from(10 * first + last)
+            })
+            .sum();
+
         Ok(res)
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        let lines = input.lines();
+        const DIGITS: [&str; 9] = [
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        ];
+
         let mut res: u32 = 0;
-        for line in lines {
+        for line in input.lines() {
             let d1 = {
                 let mut val = 0;
                 let mut first_ix = usize::MAX;
@@ -27,12 +34,10 @@ impl Aoc for Day01 {
                     first_ix = ix;
                 }
 
-                let ixs: Vec<_> = [
-                    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-                ]
-                .iter()
-                .map(|pat| line.find(pat).unwrap_or(usize::MAX))
-                .collect();
+                let ixs: Vec<_> = DIGITS
+                    .iter()
+                    .map(|pat| line.find(pat).unwrap_or(usize::MAX))
+                    .collect();
 
                 for i in 0..9 {
                     if ixs[i as usize] < first_ix {
@@ -51,12 +56,10 @@ impl Aoc for Day01 {
                     last_ix = ix;
                 }
 
-                let ixs: Vec<_> = [
-                    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-                ]
-                .iter()
-                .map(|pat| line.rfind(pat).unwrap_or(usize::MIN))
-                .collect();
+                let ixs: Vec<_> = DIGITS
+                    .iter()
+                    .map(|pat| line.rfind(pat).unwrap_or(usize::MIN))
+                    .collect();
 
                 for i in 0..9 {
                     if ixs[i as usize] > last_ix {
