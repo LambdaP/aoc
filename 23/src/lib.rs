@@ -1,12 +1,5 @@
 use color_eyre::eyre::*;
 use std::fmt::Display;
-// use std::time::Duration;
-
-macro_rules! result {
-    ($res: expr) => {
-        Ok(Box::new($res))
-    };
-}
 
 #[cfg(test)]
 macro_rules! test_part1 {
@@ -34,21 +27,21 @@ macro_rules! test_part2 {
 
 mod day01;
 mod day02;
-mod day03;
+// mod day03;
 mod day04;
 mod day05;
 mod day06;
-mod day10;
-mod day11;
+// mod day10;
+// mod day11;
 
 pub struct Day01;
 pub struct Day02;
-pub struct Day03;
+// pub struct Day03;
 pub struct Day04;
 pub struct Day05;
 pub struct Day06;
-pub struct Day10;
-pub struct Day11;
+// pub struct Day10;
+// pub struct Day11;
 
 pub struct InputRep<'a> {
     raw: &'a str,
@@ -75,12 +68,14 @@ impl<'a> InputRep<'a> {
 }
 
 pub trait Aoc {
-    fn part1(&self, _input: &InputRep) -> Result<Box<dyn Display>> {
-        result!("todo!")
+    type Output: Display;
+
+    fn part1(&self, _input: &InputRep) -> Result<Self::Output> {
+        todo!()
     }
 
-    fn part2(&self, _input: &InputRep) -> Result<Box<dyn Display>> {
-        result!("todo!")
+    fn part2(&self, _input: &InputRep) -> Result<Self::Output> {
+        todo!()
     }
 
     fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()>

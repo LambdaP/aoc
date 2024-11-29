@@ -1,4 +1,4 @@
-use crate::{Aoc, Day02, Display, InputRep, Result};
+use crate::{Aoc, Day02, InputRep, Result};
 
 use std::{
     cmp::{max, Ordering, PartialOrd},
@@ -27,6 +27,7 @@ impl PartialOrd for Rgb {
     }
 }
 
+// TODO use a real error type
 impl FromStr for Rgb {
     type Err = Infallible;
 
@@ -70,12 +71,13 @@ fn power(Rgb { r, g, b }: Rgb) -> u32 {
 
 #[derive(Debug, Default, Clone)]
 struct Game {
-    id: usize,
+    id: u32,
     cubes: Vec<Rgb>,
 }
 
 impl Aoc for Day02 {
-    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    type Output = u32;
+    fn part1(&self, input: &InputRep) -> Result<Self::Output> {
         let test_bag = Rgb {
             r: 12,
             g: 13,
@@ -83,16 +85,16 @@ impl Aoc for Day02 {
         };
         let lines = &input.lines();
 
-        let res: usize = lines
+        let res: u32 = lines
             .iter()
             .filter_map(|line| parse_line(line))
             .map(|game| (game.id, game.cubes.into_iter().reduce(max_rgb).unwrap()))
             .filter_map(|(id, rgb)| (rgb <= test_bag).then_some(id))
             .sum();
 
-        result!(res)
+        Ok(res)
     }
-    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         let lines = &input.lines();
 
         let res: u32 = lines
@@ -102,13 +104,13 @@ impl Aoc for Day02 {
             .map(power)
             .sum();
 
-        result!(res)
+        Ok(res)
     }
 }
 
 fn parse_line(line: &str) -> Option<Game> {
     let (left, right) = line.split_once(':')?;
-    let id = left.strip_prefix("Game ")?.parse::<usize>().ok()?;
+    let id = left.strip_prefix("Game ")?.parse::<u32>().ok()?;
 
     let mut cubes: Vec<Rgb> = vec![];
     for revealed in right.split(';') {

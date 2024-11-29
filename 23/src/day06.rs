@@ -1,7 +1,8 @@
-use crate::{Aoc, Day06, Display, InputRep, Result};
+use crate::{Aoc, Day06, InputRep, Result};
 
 impl Aoc for Day06 {
-    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    type Output = f64;
+    fn part1(&self, input: &InputRep) -> Result<Self::Output> {
         let input = input.as_str();
 
         let vals = parse(input)?;
@@ -20,12 +21,12 @@ impl Aoc for Day06 {
             .map(|(t, d)| (((t * t - 4 * d) as f64).sqrt() - 1f64).ceil())
             .product::<f64>();
 
-        result!(res)
+        Ok(res)
     }
 
-    fn part2(&self, _input: &InputRep) -> Result<Box<dyn Display>> {
+    fn part2(&self, _input: &InputRep) -> Result<Self::Output> {
         println!("todo!");
-        result!(0)
+        Ok(0f64)
     }
 }
 

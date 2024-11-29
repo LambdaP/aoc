@@ -1,7 +1,9 @@
-use crate::{Aoc, Day01, Display, InputRep, Result};
+use crate::{Aoc, Day01, InputRep, Result};
 
 impl Aoc for Day01 {
-    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    type Output = u32;
+
+    fn part1(&self, input: &InputRep) -> Result<Self::Output> {
         let lines = input.lines();
         let mut res: u32 = 0;
         for line in lines {
@@ -10,10 +12,10 @@ impl Aoc for Day01 {
             let d2 = digits.last().unwrap() - b'0';
             res += 10 * (d1 as u32) + (d2 as u32);
         }
-        result!(res)
+        Ok(res)
     }
 
-    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         let lines = input.lines();
         let mut res: u32 = 0;
         for line in lines {
@@ -69,7 +71,7 @@ impl Aoc for Day01 {
             res += 10 * (d1 as u32) + (d2 as u32);
         }
 
-        result!(res)
+        Ok(res)
     }
 }
 

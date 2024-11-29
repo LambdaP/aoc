@@ -1,4 +1,4 @@
-use crate::{Aoc, Day04, Display, InputRep, Result};
+use crate::{Aoc, Day04, InputRep, Result};
 
 use eyre::{eyre, Report};
 
@@ -46,7 +46,9 @@ impl Card {
 }
 
 impl Aoc for Day04 {
-    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    type Output = u32;
+
+    fn part1(&self, input: &InputRep) -> Result<Self::Output> {
         let lines = input.lines();
         let mut res = 0;
 
@@ -55,9 +57,9 @@ impl Aoc for Day04 {
             res += (1 << n) >> 1;
         }
 
-        result!(res)
+        Ok(res)
     }
-    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         let lines = input.lines();
         let mut copies: Vec<u32> = vec![0; lines.len() + 1];
         for line in lines {
@@ -73,6 +75,6 @@ impl Aoc for Day04 {
             }
         }
 
-        result!(copies.iter().sum::<u32>())
+        Ok(copies.iter().sum::<u32>())
     }
 }

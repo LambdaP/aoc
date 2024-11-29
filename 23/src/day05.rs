@@ -1,9 +1,10 @@
-use crate::{Aoc, Day05, Display, InputRep, Result};
+use crate::{Aoc, Day05, InputRep, Result};
 
 use eyre::eyre;
 
 impl Aoc for Day05 {
-    fn part1(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    type Output = usize;
+    fn part1(&self, input: &InputRep) -> Result<Self::Output> {
         let input = input.as_str();
         let (seeds, maps) = parse(input)?;
 
@@ -25,9 +26,9 @@ impl Aoc for Day05 {
             res = res.min(stack.pop().unwrap());
         }
 
-        result!(res)
+        Ok(res)
     }
-    fn part2(&self, input: &InputRep) -> Result<Box<dyn Display>> {
+    fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         let input = input.as_str();
         let (_seeds, mut maps) = parse(input)?;
 
@@ -50,7 +51,7 @@ impl Aoc for Day05 {
         // }
 
         println!("todo!");
-        result!(0)
+        Ok(0)
     }
 }
 
@@ -92,13 +93,3 @@ fn parse_list_array<const N: usize>(list: &str) -> Result<[usize; N]> {
         .collect::<Result<Vec<_>>>()?;
     Ok(vec[..].try_into()?)
 }
-
-// fn parse_list_usize(s: &str) -> Result<[usize;3]> {
-//     let mut res: Vec<usize> = Vec::with_capacity(3);
-//
-//     for x in s.split_ascii_whitespace() {
-//         res.push(x.parse::<usize>()?);
-//     }
-//
-//     Ok(res.try_into())
-// }
