@@ -20,59 +20,53 @@ impl Aoc for Day01 {
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        const DIGITS: [&str; 9] = [
-            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        const DIGITS: [(&str, u32); 18] = [
+            ("1", 1),
+            ("2", 2),
+            ("3", 3),
+            ("4", 4),
+            ("5", 5),
+            ("6", 6),
+            ("7", 7),
+            ("8", 8),
+            ("9", 9),
+            ("one", 1),
+            ("two", 2),
+            ("three", 3),
+            ("four", 4),
+            ("five", 5),
+            ("six", 6),
+            ("seven", 7),
+            ("eight", 8),
+            ("nine", 9),
         ];
 
-        let mut res: u32 = 0;
-        for line in input.lines() {
-            let d1 = {
-                let mut val = 0;
-                let mut first_ix = usize::MAX;
-                if let Some(ix) = line.find(|c: char| c.is_ascii_digit()) {
-                    val = line.as_bytes()[ix] - b'0';
-                    first_ix = ix;
-                }
+        let res = input
+            .lines()
+            .iter()
+            .map(|line| {
+                let first = (0..line.len())
+                    .find_map(|i| {
+                        DIGITS
+                            .iter()
+                            .find(|(s, _)| line[i..].starts_with(*s))
+                            .map(|(_, v)| *v)
+                    })
+                    .unwrap();
 
-                let ixs: Vec<_> = DIGITS
-                    .iter()
-                    .map(|pat| line.find(pat).unwrap_or(usize::MAX))
-                    .collect();
+                let last = (0..line.len())
+                    .rev()
+                    .find_map(|i| {
+                        DIGITS
+                            .iter()
+                            .find(|(s, _)| line[..=i].ends_with(*s))
+                            .map(|(_, v)| *v)
+                    })
+                    .unwrap();
 
-                for i in 0..9 {
-                    if ixs[i as usize] < first_ix {
-                        first_ix = ixs[i as usize];
-                        val = i + 1;
-                    }
-                }
-                val
-            };
-
-            let d2 = {
-                let mut last_ix = usize::MIN;
-                let mut val = 0;
-                if let Some(ix) = line.rfind(|c: char| c.is_ascii_digit()) {
-                    val = line.as_bytes()[ix] - b'0';
-                    last_ix = ix;
-                }
-
-                let ixs: Vec<_> = DIGITS
-                    .iter()
-                    .map(|pat| line.rfind(pat).unwrap_or(usize::MIN))
-                    .collect();
-
-                for i in 0..9 {
-                    if ixs[i as usize] > last_ix {
-                        last_ix = ixs[i as usize];
-                        val = i + 1;
-                    }
-                }
-
-                val
-            };
-
-            res += 10 * (d1 as u32) + (d2 as u32);
-        }
+                10 * first + last
+            })
+            .sum();
 
         Ok(res)
     }
