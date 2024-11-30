@@ -20,51 +20,40 @@ impl Aoc for Day01 {
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        const DIGITS: [(&str, u32); 18] = [
-            ("1", 1),
-            ("2", 2),
-            ("3", 3),
-            ("4", 4),
-            ("5", 5),
-            ("6", 6),
-            ("7", 7),
-            ("8", 8),
-            ("9", 9),
-            ("one", 1),
-            ("two", 2),
-            ("three", 3),
-            ("four", 4),
-            ("five", 5),
-            ("six", 6),
-            ("seven", 7),
-            ("eight", 8),
-            ("nine", 9),
+        const DIGITS: [&[u8]; 9] = [
+            b"one", b"two", b"three", b"four", b"five", b"six", b"seven", b"eight", b"nine",
         ];
 
         let res = input
             .lines()
             .iter()
             .map(|line| {
+                let line = line.as_bytes();
+
                 let first = (0..line.len())
-                    .find_map(|i| {
-                        DIGITS
-                            .iter()
-                            .find(|(s, _)| line[i..].starts_with(*s))
-                            .map(|(_, v)| *v)
+                    .map(|i| &line[i..])
+                    .find_map(|s| {
+                        s.first()
+                            .and_then(|b| b.is_ascii_digit().then_some(b - b'0'))
+                            .or_else(|| {
+                                (1u8..=9u8).find(|&d| s.starts_with(DIGITS[usize::from(d - 1)]))
+                            })
                     })
                     .unwrap();
 
                 let last = (0..line.len())
                     .rev()
-                    .find_map(|i| {
-                        DIGITS
-                            .iter()
-                            .find(|(s, _)| line[..=i].ends_with(*s))
-                            .map(|(_, v)| *v)
+                    .map(|i| &line[..=i])
+                    .find_map(|s| {
+                        s.last()
+                            .and_then(|b| b.is_ascii_digit().then_some(b - b'0'))
+                            .or_else(|| {
+                                (1u8..=9u8).find(|&d| s.ends_with(DIGITS[usize::from(d - 1)]))
+                            })
                     })
                     .unwrap();
 
-                10 * first + last
+                u32::from(10 * first + last)
             })
             .sum();
 
