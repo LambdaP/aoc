@@ -18,18 +18,17 @@ impl Aoc for Day01 {
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        use std::collections::HashMap;
+        let mut hist : [u16; 100_000] = [0; 100_000];
 
         let mut left = Vec::with_capacity(input.lines().len());
-        let mut hist = HashMap::with_capacity(input.lines().len());
 
         for line in input.lines() {
             let (l, r) = parse_line(line);
             left.push(l);
-            hist.entry(r).and_modify(|cnt| *cnt += r).or_insert(r);
+            hist[r as usize] += 1;
         }
 
-        let res = left.into_iter().filter_map(|k| hist.get(&k)).sum();
+        let res = left.into_iter().map(|k| k * u32::from(hist[k as usize])).sum();
 
         Ok(res)
     }
