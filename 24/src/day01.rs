@@ -20,13 +20,14 @@ impl Aoc for Day01 {
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         use std::collections::HashMap;
 
-        let (left, right): (Vec<_>, Vec<_>) =
-            input.lines().iter().map(|&line| parse_line(line)).unzip();
+        let mut left = Vec::with_capacity(input.lines().len());
+        let mut hist = HashMap::with_capacity(input.lines().len());
 
-        let hist = right.iter().fold(HashMap::new(), |mut hist, x| {
-            hist.entry(x).and_modify(|cnt| *cnt += *x).or_insert(*x);
-            hist
-        });
+        for line in input.lines() {
+            let (l, r) = parse_line(line);
+            left.push(l);
+            hist.entry(r).and_modify(|cnt| *cnt += r).or_insert(r);
+        }
 
         let res = left
             .into_iter()
@@ -37,6 +38,7 @@ impl Aoc for Day01 {
     }
 }
 
+#[inline]
 fn parse_line(line: &str) -> (u32, u32) {
     let (s1, s2) = line.split_once("   ").unwrap();
     let n1 = s1.parse::<u32>().unwrap();
