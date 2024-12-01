@@ -29,10 +29,7 @@ impl Aoc for Day01 {
             hist.entry(r).and_modify(|cnt| *cnt += r).or_insert(r);
         }
 
-        let res = left
-            .into_iter()
-            .filter_map(|k| hist.get(&k))
-            .sum();
+        let res = left.into_iter().filter_map(|k| hist.get(&k)).sum();
 
         Ok(res)
     }
