@@ -1,4 +1,4 @@
-use color_eyre::eyre::*;
+use color_eyre::eyre::{Ok, Result};
 use std::fmt::Display;
 
 #[cfg(test)]
@@ -35,19 +35,23 @@ pub struct InputRep<'a> {
 }
 
 impl<'a> InputRep<'a> {
+    #[must_use]
     pub fn new(raw: &'a str) -> Self {
         let lines = raw.lines().collect();
         Self { raw, lines }
     }
 
+    #[must_use]
     pub fn lines(&self) -> &[&str] {
         &self.lines
     }
 
+    #[must_use]
     pub fn as_str(&self) -> &str {
         self.raw
     }
 
+    #[must_use]
     pub fn as_bytes(&self) -> &[u8] {
         self.raw.as_bytes()
     }
@@ -64,8 +68,7 @@ pub trait Aoc {
         todo!()
     }
 
-    fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()>
-    {
+    fn run<P: AsRef<std::path::Path> + Copy>(&self, fpath: P) -> Result<()> {
         let string = std::fs::read_to_string(fpath)?;
         let input = InputRep::new(&string);
 
