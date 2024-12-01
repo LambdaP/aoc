@@ -18,9 +18,10 @@ impl Aoc for Day01 {
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        let mut hist : [u16; 100_000] = [0; 100_000];
+        const MAX_VALUE: usize = 100_000;
 
         let mut left = Vec::with_capacity(input.lines().len());
+        let mut hist: [u16; MAX_VALUE] = [0; MAX_VALUE];
 
         for line in input.lines() {
             let (l, r) = parse_line(line);
@@ -28,7 +29,10 @@ impl Aoc for Day01 {
             hist[r as usize] += 1;
         }
 
-        let res = left.into_iter().map(|k| k * u32::from(hist[k as usize])).sum();
+        let res = left
+            .into_iter()
+            .map(|k| k * u32::from(hist[k as usize]))
+            .sum();
 
         Ok(res)
     }
