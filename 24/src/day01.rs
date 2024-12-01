@@ -20,24 +20,19 @@ impl Aoc for Day01 {
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
         use std::collections::HashMap;
 
-        let mut left = HashMap::new();
-        let mut right = HashMap::new();
+        let (left, right): (Vec<_>, Vec<_>) =
+            input.lines().iter().map(|&line| parse_line(line)).unzip();
 
-        for line in input.lines() {
-            let (n1, n2) = parse_line(line);
-            left.entry(n1)
-                .and_modify(|counter| *counter += 1)
-                .or_insert(1);
-            right
-                .entry(n2)
-                .and_modify(|counter| *counter += 1)
-                .or_insert(1);
-        }
+        let hist = right.iter().fold(HashMap::new(), |mut hist, x| {
+            hist.entry(x).and_modify(|cnt| *cnt += *x).or_insert(*x);
+            hist
+        });
 
         let res = left
             .into_iter()
-            .map(|(k, v)| k * v * right.get(&k).unwrap_or(&0))
+            .filter_map(|k| hist.get(&k))
             .sum();
+
         Ok(res)
     }
 }
