@@ -10,12 +10,13 @@ macro_rules! run_day {
 
         println!("=== {s} ===");
         println!("personal input:");
-        aoc2024::$day.run(&format!("input/{s}.txt"))?;
+        aoc2024::$day.run_file(&format!("input/{s}.txt"))?;
     };
 }
 
 fn main() -> Result<()> {
     run_day!(Day01);
+    run_day!(Day02);
 
     Ok(())
 }
