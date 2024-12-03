@@ -27,9 +27,11 @@ macro_rules! test_part2 {
 
 mod day01;
 mod day02;
+mod day03;
 
 pub struct Day01;
 pub struct Day02;
+pub struct Day03;
 
 pub struct InputRep<'a> {
     raw: &'a str,
@@ -70,8 +72,7 @@ pub trait Aoc {
         todo!()
     }
 
-    fn run(&self, input: &InputRep) -> Result<()>
-    {
+    fn run(&self, input: &InputRep) -> Result<()> {
         let t0 = std::time::SystemTime::now();
         let res1 = self.part1(input);
         let t1 = t0.elapsed();
@@ -86,7 +87,8 @@ pub trait Aoc {
     }
 
     fn run_file<P>(&self, fpath: P) -> Result<()>
-        where P: AsRef<std::path::Path> + Copy
+    where
+        P: AsRef<std::path::Path> + Copy,
     {
         let string = std::fs::read_to_string(fpath)?;
         let input = InputRep::new(&string);

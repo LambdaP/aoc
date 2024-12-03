@@ -2,8 +2,6 @@ use color_eyre::eyre::Result;
 
 use aoc2024::Aoc;
 
-// use clap::{Parser, ValueEnum};
-
 macro_rules! run_day {
     ($day: ident) => {
         let s = stringify!($day).to_ascii_lowercase();
@@ -17,6 +15,7 @@ macro_rules! run_day {
 fn main() -> Result<()> {
     run_day!(Day01);
     run_day!(Day02);
+    run_day!(Day03);
 
     Ok(())
 }
