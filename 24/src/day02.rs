@@ -1,4 +1,5 @@
 use crate::{Aoc, Day02, InputRep, Result};
+use eyre::WrapErr;
 
 impl Aoc for Day02 {
     type Output = u16;
@@ -15,7 +16,7 @@ impl Aoc for Day02 {
             .filter(|levels| unsafe_index(levels).is_none())
             .count();
 
-        u16::try_from(res).map_err(|e| e.into())
+        u16::try_from(res).wrap_err("")
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
@@ -30,7 +31,7 @@ impl Aoc for Day02 {
             .filter(|levels| is_almost_safe(levels))
             .count();
 
-        u16::try_from(res).map_err(|e| e.into())
+        u16::try_from(res).wrap_err("")
     }
 }
 
