@@ -8,8 +8,10 @@ impl Aoc for Day05 {
 
         let res = updates
             .into_iter()
-            .filter(|u| check_update(&precedes, u))
-            .map(|u| u32::from(u[u.len() / 2]))
+            .filter_map(|u| {
+                let (ordered, mid_value) = valid_update_and_mid_value(&precedes, &u);
+                ordered.then_some(u32::from(mid_value))
+            })
             .sum();
 
         Ok(res)
@@ -20,17 +22,9 @@ impl Aoc for Day05 {
 
         let res = updates
             .into_iter()
-            .filter(|u| !check_update(&precedes, u))
-            .map::<u32, _>(|u| {
-                let mask = u.iter().fold(0, |acc, x| acc | (1 << x));
-
-                u.iter()
-                    .copied()
-                    .find(|&x| {
-                        (precedes[usize::from(x)] & mask).count_ones() as usize == u.len() / 2
-                    })
-                    .unwrap()
-                    .into()
+            .filter_map(|u| {
+                let (ordered, mid_value) = valid_update_and_mid_value(&precedes, &u);
+                (!ordered).then_some(u32::from(mid_value))
             })
             .sum();
 
@@ -39,12 +33,29 @@ impl Aoc for Day05 {
 }
 
 #[inline]
-fn check_update(precedes: &[u128; 100], update: &[u8]) -> bool {
-    update.iter().enumerate().all(|(i, &x)| {
-        update[i + 1..]
-            .iter()
-            .all(|y| precedes[usize::from(x)] & (1 << y) == 0)
-    })
+fn valid_update_and_mid_value(precedes: &[u128; 100], update: &[u8]) -> (bool, u8) {
+    let mask = update.iter().fold(0, |mut acc, x| {
+        acc |= 1 << x;
+        acc
+    });
+
+    let mut ordered = true;
+    let mut mid_value = None;
+
+    for (i, &x) in update.iter().enumerate() {
+        let order = (precedes[usize::from(x)] & mask).count_ones() as usize;
+        ordered = ordered && order == i;
+
+        if order == update.len() / 2 {
+            mid_value = Some(x);
+        }
+
+        if !ordered && mid_value.is_some() {
+            break;
+        }
+    }
+
+    (ordered, mid_value.unwrap())
 }
 
 #[derive(Debug, Eq, PartialEq)]
