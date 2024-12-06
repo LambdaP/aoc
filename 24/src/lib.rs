@@ -29,11 +29,13 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
 
 pub struct Day01;
 pub struct Day02;
 pub struct Day03;
 pub struct Day04;
+pub struct Day05;
 
 pub struct InputRep<'a> {
     raw: &'a str,
@@ -43,13 +45,22 @@ pub struct InputRep<'a> {
 impl<'a> InputRep<'a> {
     #[must_use]
     pub fn new(raw: &'a str) -> Self {
-        let lines = raw.lines().collect();
+        let lines: Vec<&str> = raw.lines().collect();
         Self { raw, lines }
     }
 
     #[must_use]
     pub fn lines(&self) -> &[&str] {
         &self.lines
+    }
+
+    #[must_use]
+    pub fn byte_lines(&self) -> &[&[u8]] {
+        // SAFETY: &str and &[u8] have identical layouts and &str is valid UTF-8.
+        // We only transmute the element type, preserving slice lifetime.
+        unsafe {
+            &*(std::ptr::from_ref::<[&str]>(self.lines()) as *const [&[u8]])
+        }
     }
 
     #[must_use]

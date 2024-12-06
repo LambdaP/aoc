@@ -11,16 +11,12 @@ impl Aoc for Day04 {
             s == b"XMAS" || s == b"SAMX"
         }
 
-        let byte_lines = input
-            .lines()
-            .iter()
-            .map(|s| s.as_bytes())
-            .collect::<Vec<_>>();
+        let byte_lines = input.byte_lines();
 
-        let res = x_windows::<4>(&byte_lines)
+        let res = x_windows::<4>(byte_lines)
             .flat_map(<[_; 2]>::from)
-            .chain(horizontal_windows::<4>(&byte_lines))
-            .chain(vertical_windows::<4>(&byte_lines))
+            .chain(horizontal_windows::<4>(byte_lines))
+            .chain(vertical_windows::<4>(byte_lines))
             .filter(|s| is_xmas_word(s))
             .count();
 
@@ -32,21 +28,15 @@ impl Aoc for Day04 {
             s == b"MAS" || s == b"SAM"
         }
 
-        let byte_lines = input
-            .lines()
-            .iter()
-            .map(|s| s.as_bytes())
-            .collect::<Vec<_>>();
+        let byte_lines = input.byte_lines();
 
-        let res = x_windows::<3>(&byte_lines)
+        let res = x_windows::<3>(byte_lines)
             .filter(|(l, r)| is_mas_word(l) && is_mas_word(r))
             .count();
 
         <u32>::try_from(res).wrap_err("")
     }
 }
-
-
 
 fn x_windows<'a, const N: usize>(
     data: &'a [&'a [u8]],
