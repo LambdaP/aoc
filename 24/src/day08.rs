@@ -4,9 +4,7 @@ impl Aoc for Day08 {
     type Output = u16;
 
     fn part1(&self, input: &InputRep) -> Result<Self::Output> {
-        use std::collections::HashSet;
-
-        let mut antinodes = HashSet::new();
+        let mut antinodes = vec![0u64; input.byte_lines().len()];
 
         let h = input.byte_lines().len() as i8;
         let w = input.byte_lines()[0].len() as i8;
@@ -14,25 +12,23 @@ impl Aoc for Day08 {
         for a in parse_antennas(input.byte_lines()) {
             for (i, (x1, y1)) in a.iter().enumerate() {
                 for (x2, y2) in &a[i + 1..] {
-                    let p = (2 * x1 - x2, 2 * y1 - y2);
+                    let p @ (x, y) = (2 * x1 - x2, 2 * y1 - y2);
                     if point_is_in_grid((h, w), p) {
-                        antinodes.insert(p);
+                        antinodes[x as usize] |= 1 << y;
                     }
-                    let q = (2 * x2 - x1, 2 * y2 - y1);
-                    if point_is_in_grid((h, w), q) {
-                        antinodes.insert(q);
+                    let p @ (x,y) = (2 * x2 - x1, 2 * y2 - y1);
+                    if point_is_in_grid((h, w), p) {
+                        antinodes[x as usize] |= 1 << y;
                     }
                 }
             }
         }
 
-        Ok(antinodes.len() as u16)
+        Ok(antinodes.into_iter().map(|x| x.count_ones()).sum::<u32>() as u16)
     }
 
     fn part2(&self, input: &InputRep) -> Result<Self::Output> {
-        use std::collections::HashSet;
-
-        let mut antinodes = HashSet::new();
+        let mut antinodes = vec![0u64; input.byte_lines().len()];
 
         let h = input.byte_lines().len() as i8;
         let w = input.byte_lines()[0].len() as i8;
@@ -40,19 +36,17 @@ impl Aoc for Day08 {
         for a in parse_antennas(input.byte_lines()) {
             for (i, (x1, y1)) in a.iter().enumerate() {
                 for (x2, y2) in &a[i + 1..] {
-                    let delta_x = x2 - x1;
-                    let delta_y = y2 - y1;
-                    for p in semi_line((h,w), (*x2, *y2), (delta_x, delta_y)) {
-                        antinodes.insert(p);
+                    for (x,y) in semi_line((h,w), (*x2, *y2), (x2-x1, y2-y1)) {
+                        antinodes[x as usize] |= 1 << y;
                     }
-                    for p in semi_line((h,w), (*x1, *y1), (-delta_x, -delta_y)) {
-                        antinodes.insert(p);
+                    for (x,y) in semi_line((h,w), (*x1, *y1), (x1-x2, y1-y2)) {
+                        antinodes[x as usize] |= 1 << y;
                     }
                 }
             }
         }
 
-        Ok(antinodes.len() as u16)
+        Ok(antinodes.into_iter().map(|x| x.count_ones()).sum::<u32>() as u16)
     }
 }
 
@@ -73,7 +67,6 @@ fn semi_line(grid_dims: (i8, i8), p0: (i8, i8), (delta_x, delta_y): (i8, i8)) ->
             None
         }
     })
-
 }
 
 const RANGE: usize = 1 + (b'z' - b'0') as usize;
