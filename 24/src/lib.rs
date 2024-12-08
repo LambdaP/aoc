@@ -30,12 +30,16 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+// mod day06;
+mod day07;
 
 pub struct Day01;
 pub struct Day02;
 pub struct Day03;
 pub struct Day04;
 pub struct Day05;
+// pub struct Day06;
+pub struct Day07;
 
 pub struct InputRep<'a> {
     raw: &'a str,
@@ -58,9 +62,7 @@ impl<'a> InputRep<'a> {
     pub fn byte_lines(&self) -> &[&[u8]] {
         // SAFETY: &str and &[u8] have identical layouts and &str is valid UTF-8.
         // We only transmute the element type, preserving slice lifetime.
-        unsafe {
-            &*(std::ptr::from_ref::<[&str]>(self.lines()) as *const [&[u8]])
-        }
+        unsafe { &*(std::ptr::from_ref::<[&str]>(self.lines()) as *const [&[u8]]) }
     }
 
     #[must_use]

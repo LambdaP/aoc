@@ -55,8 +55,7 @@ fn horizontal_windows<'a, const N: usize>(
     data: &'a [&'a [u8]],
 ) -> impl Iterator<Item = [u8; N]> + 'a {
     data.iter()
-        .flat_map(|row| (0..=row.len() - N)
-        .map(move |col| row[col..col+N].try_into().unwrap()))
+        .flat_map(|row| (0..=row.len() - N).map(move |col| row[col..col + N].try_into().unwrap()))
 }
 
 fn vertical_windows<'a, const N: usize>(
